@@ -7,7 +7,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <div className="App">
-        <UserDetailsView />
+        <UserDetailsView pageNo={5} />
       </div>
     </Provider>
   );

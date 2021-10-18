@@ -1,1 +1,3 @@
-export default interface UserDetailsViewProps {}
+export default interface UserDetailsViewProps {
+  pageNo: number;
+}

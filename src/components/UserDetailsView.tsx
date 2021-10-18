@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getUsers } from "../actions/usersActions";
 import { getBankAccounts } from "../actions/bankAccountsActions";
@@ -7,11 +7,12 @@ import { IState } from "../reducers";
 import { IUsersReducer } from "../reducers/usersReducer";
 import UserDetailsViewProps from "../entities/UserDetailsViewProps";
 import { IBankAccountsReducer } from "../reducers/bankAccountsReducer";
+import ReactPaginate from "react-paginate";
 
 type GetUsers = ReturnType<typeof getUsers>;
 type GetBankAccounts = ReturnType<typeof getBankAccounts>;
 
-export const UserDetailsView: FC = (props: UserDetailsViewProps) => {
+export const UserDetailsView: FC<UserDetailsViewProps> = ({ pageNo }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch<GetUsers>(getUsers());
@@ -25,20 +26,39 @@ export const UserDetailsView: FC = (props: UserDetailsViewProps) => {
     ...globalState.users,
     ...globalState.bankAccounts
   }));
+  const [pageNumber, setPageNumber] = useState(pageNo - 1);
+
+  const accountsPerPage = 1;
+  const pagesVisited = pageNumber * accountsPerPage;
+  const PageCount = Math.ceil(usersList?.length / accountsPerPage);
+
+  const displayPosts = () =>
+    usersList.slice(pagesVisited, pagesVisited + accountsPerPage).map((el) => {
+      return <div>{el.email}</div>;
+    });
+  const ChangePage = ({ selected }: any) => {
+    setPageNumber(selected);
+  };
 
   return (
     <div>
       {usersList.length > 0 && bankAccountsList.accounts?.length > 0 && (
-        <div>
-          <h2>Users:</h2>
-          {usersList.map((el) => {
-            return <div key={el.email}>{el.email}</div>;
-          })}
-          <h2>Bank accounts balance:</h2>
-          {bankAccountsList.accounts?.map((el: { balance: number }) => {
-            return <div key={el.balance}>{el.balance}</div>;
-          })}
-        </div>
+        <span>
+          {displayPosts()}
+          <ReactPaginate
+            previousLabel={"Prev"}
+            nextLabel={"Next"}
+            pageCount={PageCount}
+            onPageChange={ChangePage}
+            containerClassName={"paginationBttns"}
+            previousClassName={"previousBttn"}
+            nextLinkClassName={"nextBttn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}
+            pageRangeDisplayed={1}
+            marginPagesDisplayed={1}
+          />
+        </span>
       )}
     </div>
   );
