@@ -32,9 +32,14 @@ export const UserDetailsView: FC<UserDetailsViewProps> = ({ pageNo }) => {
   const pagesVisited = pageNumber * accountsPerPage;
   const PageCount = Math.ceil(usersList?.length / accountsPerPage);
 
-  const displayPosts = () =>
+  const displayUsers = () =>
     usersList.slice(pagesVisited, pagesVisited + accountsPerPage).map((el) => {
-      return <div>{el.email}</div>;
+      return (
+        <span>
+          <div>{el.email}</div>
+          <div></div>
+        </span>
+      );
     });
   const ChangePage = ({ selected }: any) => {
     setPageNumber(selected);
@@ -44,7 +49,7 @@ export const UserDetailsView: FC<UserDetailsViewProps> = ({ pageNo }) => {
     <div>
       {usersList.length > 0 && bankAccountsList.accounts?.length > 0 && (
         <span>
-          {displayPosts()}
+          {displayUsers()}
           <ReactPaginate
             previousLabel={"Prev"}
             nextLabel={"Next"}
